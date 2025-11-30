@@ -1,0 +1,34 @@
+generator client
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Screenshots Screenshot[]
+}
+
+model Screenshot {
+  id         String   @id @default(uuid())
+  imageUrl   String
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  DataPoints DataPoint[]
+}
+
+model DataPoint {
+  id          String   @id @default(uuid())
+  content     String
+  screenshotId String
+  screenshot  Screenshot @relation(fields: [screenshotId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
